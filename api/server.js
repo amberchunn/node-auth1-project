@@ -1,6 +1,11 @@
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
+const session = require('express-session')
+const SessionStore = require('connect-session-knex')(session)
+const usersRouter = require('./users/users-router')
+const authRouter = require('./users/users-router')
+const db = require('../data/db-config')
 
 /**
   Do what needs to be done to support sessions with the `express-session` package!
@@ -20,9 +25,22 @@ const server = express();
 server.use(helmet());
 server.use(express.json());
 server.use(cors());
+server.use(session({
+  resave: false,
+  saveUninitialized: false,
+  name: 'chocolatechip',
+  secret: 'mochi',
+  store: new SessionStore({
+    knex: db,
+    createtable: true,
+  }),
+}))
+
+server.use(authRouter)
+server.use(usersRouter)
 
 server.get("/", (req, res) => {
-  res.json({ api: "up" });
+  res.json({ api: "API Status: Active" });
 });
 
 server.use((err, req, res, next) => { // eslint-disable-line
