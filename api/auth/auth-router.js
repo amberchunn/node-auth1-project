@@ -3,7 +3,7 @@
 
 const express = require('express')
 const bcrypt = require('bcryptjs')
-const { checkPasswordLength, checkUsernameExists } = require('./auth-middleware')
+const { checkUsernameFree, checkPasswordLength, checkUsernameExists } = require('./auth-middleware')
 const Users = require('../users/users-model')
 
 
@@ -32,7 +32,7 @@ const router = express.Router()
   }
  */
 
-router.post('/api/auth/register', checkPasswordLength(), async (req, res, next) => {
+router.post('/api/auth/register', checkUsernameFree(), checkPasswordLength(), async (req, res, next) => {
   try {
     const { username, password } = req.body
     const user = await Users.findBy( { username } ).first()

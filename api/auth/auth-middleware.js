@@ -33,7 +33,7 @@ function restricted() {
 function checkUsernameFree() {
   return async (req, res, next) => {
     try {
-      const user = await Users.findBy(req.body.username).first()
+      const user = Users.findBy(req.body.username).first()
 
       if ( user.length > 0 ) {
         return res.status(422).json({
